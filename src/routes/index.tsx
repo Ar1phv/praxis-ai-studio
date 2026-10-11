@@ -1,26 +1,28 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, X } from "lucide-react";
 import gateway from "@/assets/gateway.jpg";
-import { AgentCard } from "@/components/praxis/agent-card";
+import { AgentCard, Chip } from "@/components/praxis/agent-card";
+import { BetaForm } from "@/components/praxis/beta-form";
 import { Eyebrow, MetaLabel, Panel, StatBlock, StatusTag } from "@/components/praxis/primitives";
 import { SiteFooter, SiteHeader } from "@/components/praxis/site-chrome";
-import { agents } from "@/lib/mock-data";
+import { agents, type AgentId } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Praxis — Execution, automated." },
+      { title: "Praxis: Execution, automated." },
       {
         name: "description",
         content:
-          "Praxis is the autonomous product execution platform. Describe what you want to build; coordinated AI agents plan, design, build, test and ship it.",
+          "Praxis is an autonomous product execution platform in build. Describe what you want to build and coordinated AI agents plan and build it, with you approving every step.",
       },
-      { property: "og:title", content: "Praxis — Execution, automated." },
+      { property: "og:title", content: "Praxis: Execution, automated." },
       {
         property: "og:description",
-        content:
-          "Describe a product. Praxis coordinates specialized agents to plan, design, build, test and ship it.",
+        content: "Coordinated AI agents that plan and build your product. Roadmap, pricing and beta applications.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,
@@ -38,10 +40,10 @@ const problems = [
 const promises = [
   "Wake up to real progress",
   "A team that never sleeps",
-  "End-to-end execution",
+  "End to end execution, built in phases",
   "You stay in control",
-  "Everything is verified",
-  "Ship faster. Scale smarter.",
+  "Every step human approved",
+  "Move faster. Scale smarter.",
 ];
 
 const transformation = [
@@ -52,12 +54,65 @@ const transformation = [
   ["Uncertain", "In control"],
 ];
 
-const pipeline = [
-  { step: "01", name: "Plan", detail: "Objective decomposed into milestones, scope and acceptance criteria." },
-  { step: "02", name: "Design", detail: "Interface systems, flows and a token-level design language." },
-  { step: "03", name: "Build", detail: "Services, integrations and infrastructure implemented end to end." },
-  { step: "04", name: "Test", detail: "Regression, security review and verification gates before release." },
-  { step: "05", name: "Ship", detail: "Deployment, monitoring and a complete handover pack." },
+type PhaseStatus = "In build" | "Coming";
+
+const pipeline: { step: string; name: string; detail: string; status: PhaseStatus }[] = [
+  { step: "01", name: "Plan", status: "In build", detail: "Objective decomposed into milestones, scope and acceptance criteria." },
+  { step: "02", name: "Design", status: "Coming", detail: "Interface systems, flows and a token level design language." },
+  { step: "03", name: "Build", status: "In build", detail: "Services, integrations and infrastructure implemented end to end." },
+  { step: "04", name: "Test", status: "Coming", detail: "Regression, security review and verification gates before release." },
+  { step: "05", name: "Ship", status: "Coming", detail: "Deployment, monitoring and a complete handover pack." },
+];
+
+const personas: Partial<Record<AgentId, string>> = {
+  orchestrator: "Hermes",
+  product: "Athena",
+  builder: "Hephaestus",
+};
+
+const roadmap: { name: string; status: "In build" | "Planned"; items: string[] }[] = [
+  {
+    name: "Demo",
+    status: "In build",
+    items: [
+      "Hermes, Athena and Hephaestus running end to end.",
+      "Architecture diagram and file tree output.",
+      "Live streamed terminal.",
+      "Multiple executions side by side.",
+    ],
+  },
+  {
+    name: "Beta",
+    status: "Planned",
+    items: [
+      "Application based access, 20 to 50 users.",
+      "Real starter codebase from the Builder Agent.",
+      "QA agent.",
+      "Human approval gate.",
+      "Users own everything they build.",
+    ],
+  },
+  {
+    name: "Ship",
+    status: "Planned",
+    items: [
+      "Deployment agent pushing to production.",
+      "Human approval before every deployment.",
+      "Designer agent for visual direction and motion.",
+    ],
+  },
+  {
+    name: "Scale",
+    status: "Planned",
+    items: ["Additional model providers.", "USDC payments.", "Deeper integrations."],
+  },
+];
+
+const tiers = [
+  { name: "Blueprint", detail: "PRD, architecture and roadmap." },
+  { name: "Build", detail: "Blueprint plus starter codebase." },
+  { name: "Ship", detail: "Build plus testing and deployment preparation." },
+  { name: "Enterprise", detail: "Custom." },
 ];
 
 function Landing() {
@@ -92,17 +147,17 @@ function Landing() {
                 Start an Execution
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <Link
-                to="/dashboard"
+              <a
+                href="#beta"
                 className="label-mono inline-flex items-center gap-3 border border-border-strong px-6 py-3.5 text-foreground transition-colors hover:border-signal hover:text-signal"
               >
-                View live execution
-              </Link>
+                Apply for beta
+              </a>
             </div>
 
             <div className="mt-14 grid max-w-lg grid-cols-3 gap-6">
               <StatBlock value="24/7" label="Execution" />
-              <StatBlock value="100%" label="Verified" />
+              <StatBlock value="Human" label="Approved" />
               <StatBlock value="0" label="Meetings" />
             </div>
           </div>
@@ -134,6 +189,11 @@ function Landing() {
             </div>
           </div>
         </div>
+        <div className="border-t border-border">
+          <p className="label-mono mx-auto max-w-[1400px] px-5 py-3 text-muted-foreground sm:px-8">
+            v0.1 / Orchestrator, Product and Builder agents in build. Design, QA and deploy on the roadmap.
+          </p>
+        </div>
       </section>
 
       {/* POSITIONING */}
@@ -145,9 +205,9 @@ function Landing() {
               Execution certainty for founders building what's next.
             </h2>
             <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-              Unlike assistants that answer questions, Praxis executes missions. One objective in,
-              a shipped product out — planned, designed, built, tested and verified by a
-              coordinated agent system you command.
+              Unlike assistants that answer questions, Praxis is being built to execute missions.
+              One objective in, a product plan and starter build out, produced by a coordinated
+              agent system you command and approve.
             </p>
           </div>
           <div className="px-5 py-12 sm:px-8">
@@ -206,7 +266,10 @@ function Landing() {
           <div className="mt-10 grid grid-cols-1 gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
             {pipeline.map((phase) => (
               <div key={phase.step} className="flex flex-col gap-3 bg-surface p-5">
-                <span className="label-mono text-signal">{phase.step}</span>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="label-mono text-signal">{phase.step}</span>
+                  <Chip active={phase.status === "In build"}>{phase.status}</Chip>
+                </div>
                 <h3 className="text-base font-medium">{phase.name}</h3>
                 <p className="text-xs leading-relaxed text-muted-foreground">{phase.detail}</p>
               </div>
@@ -225,28 +288,105 @@ function Landing() {
                 Five specialists. One execution graph.
               </h2>
             </div>
-            <StatusTag tone="signal" pulse>
-              Live from EXC-0142
-            </StatusTag>
+            <div className="flex flex-col items-start gap-1.5 sm:items-end">
+              <StatusTag tone="signal">Sample execution EXC-0142</StatusTag>
+              <p className="text-xs text-muted-foreground">Illustrative data. Not a live run.</p>
+            </div>
           </div>
           <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {agents.map((agent) => (
-              <AgentCard key={agent.id} agent={agent} />
-            ))}
+            {agents.map((agent) => {
+              const persona = personas[agent.id];
+              return persona ? (
+                <AgentCard key={agent.id} agent={agent} persona={persona} chip="In build" />
+              ) : (
+                <AgentCard key={agent.id} agent={agent} coming />
+              );
+            })}
             <Panel className="items-start justify-center gap-4 p-6">
               <Eyebrow>Your mission</Eyebrow>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Give Praxis an objective. We assemble the team, execute the mission, and you ship.
+                Give Praxis an objective. We assemble the team and run the mission. You approve every step.
               </p>
-              <Link
-                to="/start"
+              <a
+                href="#beta"
                 className="label-mono group inline-flex items-center gap-3 border border-signal px-5 py-3 text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
               >
-                Start an Execution
+                Apply for beta
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </a>
             </Panel>
           </div>
+        </div>
+      </section>
+
+      {/* ROADMAP */}
+      <section id="roadmap" className="scroll-mt-20 border-b border-border">
+        <div className="mx-auto max-w-[1400px] px-5 py-14 sm:px-8">
+          <Eyebrow>Roadmap</Eyebrow>
+          <h2 className="mt-6 max-w-xl font-display text-2xl font-medium sm:text-3xl">
+            Where Praxis is today and where it goes next.
+          </h2>
+          <div className="mt-10 grid grid-cols-1 gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
+            {roadmap.map((stage) => (
+              <div key={stage.name} className="flex flex-col gap-4 bg-surface p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-base font-medium">{stage.name}</h3>
+                  <Chip active={stage.status === "In build"}>{stage.status}</Chip>
+                </div>
+                <ul className="space-y-2.5">
+                  {stage.items.map((item) => (
+                    <li key={item} className="text-xs leading-relaxed text-muted-foreground">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-xs text-muted-foreground">
+            Roadmap is directional. Scope changes as we learn.
+          </p>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section id="pricing" className="scroll-mt-20 border-b border-border">
+        <div className="mx-auto max-w-[1400px] px-5 py-14 sm:px-8">
+          <div className="flex items-center gap-3">
+            <Eyebrow>Pricing</Eyebrow>
+            <Chip>Planned</Chip>
+          </div>
+          <h2 className="mt-6 max-w-xl font-display text-2xl font-medium sm:text-3xl">
+            Beta is free. Pricing is announced after beta.
+          </h2>
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {tiers.map((tier) => (
+              <Panel key={tier.name} className="gap-4 p-5">
+                <h3 className="text-base font-medium">{tier.name}</h3>
+                <p className="flex-1 text-xs leading-relaxed text-muted-foreground">{tier.detail}</p>
+                <div className="border-t border-border pt-4">
+                  <MetaLabel>Price</MetaLabel>
+                  <p className="mt-1.5 font-display text-2xl leading-none">TBA</p>
+                </div>
+              </Panel>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BETA */}
+      <section id="beta" className="scroll-mt-20 border-b border-border">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-5 py-14 sm:px-8 lg:grid-cols-2">
+          <div>
+            <Eyebrow>Beta</Eyebrow>
+            <h2 className="mt-6 font-display text-2xl font-medium sm:text-3xl">Apply for the beta</h2>
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
+              Free in exchange for honest feedback and a testimonial. Applications are reviewed
+              manually. You hear back within one week. You own everything you build. Products
+              shipped through Praxis carry a Built with Praxis credit.
+            </p>
+          </div>
+          <BetaForm />
         </div>
       </section>
 
