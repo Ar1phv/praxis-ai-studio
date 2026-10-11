@@ -44,6 +44,7 @@ function Dashboard() {
             <div>
               <div className="flex items-center gap-3">
                 <MetaLabel>{activeExecution.id}</MetaLabel>
+                <span className="label-mono border border-border px-2 py-0.5 text-muted-foreground">Sample execution</span>
                 <StatusTag tone="signal" pulse>
                   In progress
                 </StatusTag>
@@ -110,7 +111,11 @@ function Dashboard() {
           ))}
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 flex items-center gap-3">
+          <span className="label-mono border border-border px-2 py-0.5 text-muted-foreground">Sample execution</span>
+          <p className="text-xs text-muted-foreground">Illustrative data. Not a live run.</p>
+        </div>
+        <div className="mt-4">
           <TimelinePanel />
         </div>
 
@@ -129,7 +134,7 @@ function Dashboard() {
         <div className="mt-12">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <Eyebrow>Agent system</Eyebrow>
+              <div className="flex items-center gap-3"><Eyebrow>Agent system</Eyebrow><span className="label-mono border border-border px-2 py-0.5 text-muted-foreground">Sample execution</span></div>
               <h2 className="mt-4 font-display text-xl font-medium sm:text-2xl">
                 Team assigned to {activeExecution.name}
               </h2>
